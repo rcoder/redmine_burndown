@@ -9,7 +9,7 @@ Dispatcher.to_prepare do
   Project.class_eval { include ScrumAlliance::Redmine::CurrentVersionExtension }
 end
 
-Redmine::Plugin.register :burndown do
+Redmine::Plugin.register :redmine_burndown do
   name 'Redmine Burndown plugin'
   author 'Dan Hodos'
   description 'Generates a simple Burndown chart for using Redmine in Scrum environments'
