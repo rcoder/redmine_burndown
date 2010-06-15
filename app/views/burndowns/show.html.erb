@@ -1,6 +1,6 @@
 <% if @version %>
     <h2><%= @version.name %> <%= l(:burndown) %></h2>
-    <p><%= image_tag(@chart.to_s) %></p>
+    <p><%= image_tag(@chart.to_s) %></p> 
 <% end %>
 
 <% content_for :sidebar do %>

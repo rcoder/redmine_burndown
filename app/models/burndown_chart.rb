@@ -29,21 +29,17 @@ class BurndownChart
   def sprint_data
     @sprint_data ||= dates.map do |date|
       issues = all_issues.select {|issue| issue.created_on.to_date <= date }
-      issues.inject(0) do |total_hours_left, issue|
-        done_ratio_details = issue.journals.map(&:details).flatten.select {|detail| 'done_ratio' == detail.prop_key }
-        details_today_or_earlier = done_ratio_details.select {|a| a.journal.created_on.to_date <= date }
+      issues.inject(0) do |total_open_issues, issue|
+        changes_before_date = issue.journals.find(:all, :conditions => ["created_on < :date", {:date => date}])
 
-        last_done_ratio_change = details_today_or_earlier.sort_by {|a| a.journal.created_on }.last
-
-        ratio = if last_done_ratio_change
-          last_done_ratio_change.value
-        elsif done_ratio_details.size > 0
-          0
+        if changes_before_date.nil?
+            was_closed = !!(issue.status.is_closed?)
         else
-          issue.done_ratio.to_i
+            was_closed = !!(changes_before_date.detect {|change| change.new_status && change.new_status.is_closed? })
         end
-        
-        total_hours_left += (issue.estimated_hours.to_i * (100-ratio.to_i)/100)
+
+        total_open_issues += 1 unless was_closed
+        total_open_issues
       end
     end
   end

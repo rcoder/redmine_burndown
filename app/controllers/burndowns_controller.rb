@@ -15,6 +15,6 @@ class BurndownsController < ApplicationController
 private
   def find_version_and_project
     @project = Project.find(params[:project_id])
-    @version = params[:id] ? @project.versions.find(params[:id]) : @project.current_version
+    @version = params[:id] ? @project.shared_versions.find(params[:id]) : @project.current_version
   end
 end
